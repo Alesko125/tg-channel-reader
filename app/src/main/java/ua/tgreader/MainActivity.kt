@@ -20,7 +20,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import android.speech.tts.TextToSpeech
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import ua.tgreader.databinding.ActivityMainBinding
 import ua.tgreader.update.UpdateCheckWorker
@@ -57,7 +59,6 @@ class MainActivity : AppCompatActivity() {
         b.posts.layoutManager = layoutManager
         b.posts.adapter = adapter
 
-        b.channelInput.setText(Reader.savedChannel?.let { "@$it" })
         b.openButton.setOnClickListener { submit() }
         b.channelInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_GO) { submit(); true } else false
@@ -75,6 +76,7 @@ class MainActivity : AppCompatActivity() {
             override fun onStartTrackingTouch(slider: com.google.android.material.slider.Slider) {}
             override fun onStopTrackingTouch(slider: com.google.android.material.slider.Slider) = Reader.setRate(slider.value)
         })
+        b.voiceButton.setOnClickListener { showVoiceDialog() }
         b.followSwitch.setOnCheckedChangeListener { _, checked -> Reader.setFollow(checked) }
 
         b.updateButton.setOnClickListener { Updater.start(this) }
@@ -179,17 +181,106 @@ class MainActivity : AppCompatActivity() {
         }
         if (b.followSwitch.isChecked != s.follow) b.followSwitch.isChecked = s.follow
 
+        renderChannels(s)
+        b.voiceButton.text = getString(
+            R.string.voice_label,
+            s.voices.firstOrNull { it.name == s.voice }?.label?.substringBefore(" · ") ?: "стандартний",
+        )
+
         val channelChanged = s.channel != lastChannel
         adapter.submit(s.posts, s.current, s.lastReadId, s.hasOlder)
         if (channelChanged && s.posts.isNotEmpty()) {
             lastChannel = s.channel
-            // Show the first unread post (or the newest one).
-            val firstUnread = s.posts.indexOfFirst { it.id > s.lastReadId }.let { if (it == -1) s.posts.lastIndex else it }
-            b.posts.scrollToPosition(adapter.positionOf(firstUnread))
+            b.channelInput.text = null
+            // Open at the newest post, like a chat.
+            b.posts.scrollToPosition(adapter.positionOf(s.posts.lastIndex))
         } else if (s.current != lastCurrent && s.current in s.posts.indices) {
             b.posts.smoothScrollToPosition(adapter.positionOf(s.current))
         }
         lastCurrent = s.current
+    }
+
+    private var renderedChannels: Pair<List<SavedChannel>, String?>? = null
+
+    /** One chip per saved channel; tap switches, ✕ removes. */
+    private fun renderChannels(s: ReaderState) {
+        val key = s.channels to s.channel
+        if (key == renderedChannels) return
+        renderedChannels = key
+        b.channelsScroll.isVisible = s.channels.isNotEmpty()
+        b.channelChips.removeAllViews()
+        for (ch in s.channels) {
+            val chip = com.google.android.material.chip.Chip(this, null, com.google.android.material.R.attr.chipStyle).apply {
+                text = ch.title.ifBlank { "@" + ch.name }
+                isCheckable = true
+                isChecked = ch.name.equals(s.channel, ignoreCase = true)
+                isCloseIconVisible = true
+                closeIconContentDescription = getString(R.string.remove)
+                setEnsureMinTouchTargetSize(false)
+                setOnClickListener {
+                    if (!ch.name.equals(Reader.state.value.channel, ignoreCase = true)) Reader.openChannel(ch.name)
+                    else isChecked = true
+                }
+                setOnCloseIconClickListener { confirmRemove(ch) }
+            }
+            b.channelChips.addView(chip)
+            if (chip.isChecked) b.channelsScroll.post { b.channelsScroll.smoothScrollTo(chip.left - 24, 0) }
+        }
+    }
+
+    private fun confirmRemove(ch: SavedChannel) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.remove_channel_title)
+            .setMessage(getString(R.string.remove_channel_text, ch.title.ifBlank { "@" + ch.name }))
+            .setPositiveButton(R.string.remove) { _, _ -> Reader.removeChannel(ch.name) }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun showVoiceDialog() {
+        val s = Reader.state.value
+        val labels = listOf(getString(R.string.voice_standard)) + s.voices.map { it.label }
+        val checked = s.voices.indexOfFirst { it.name == s.voice } + 1
+        val builder = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.voice_title)
+            .setPositiveButton(R.string.voice_done, null)
+            .setNegativeButton(R.string.voice_more) { _, _ -> openTtsSettings() }
+        if (s.voices.isEmpty()) builder.setMessage(R.string.voice_none)
+        else builder.setSingleChoiceItems(labels.toTypedArray(), checked) { _, which ->
+            // Selecting a voice plays a short sample right away.
+            Reader.setVoice(if (which == 0) null else s.voices[which - 1].name)
+        }
+        if (s.engines.size > 1) builder.setNeutralButton(R.string.voice_engine) { _, _ -> showEngineDialog() }
+        builder.show()
+    }
+
+    private fun showEngineDialog() {
+        val s = Reader.state.value
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.engine_title)
+            .setSingleChoiceItems(s.engines.map { it.label }.toTypedArray(), s.engines.indexOfFirst { it.packageName == s.engine }) { d, which ->
+                Reader.setEngine(s.engines[which].packageName)
+                d.dismiss()
+                // The new engine loads its voices asynchronously; reopen the picker once they arrive.
+                lifecycleScope.launch {
+                    kotlinx.coroutines.withTimeoutOrNull(5_000) {
+                        Reader.state.first { it.voices.isNotEmpty() && it.engine == s.engines[which].packageName }
+                    }
+                    showVoiceDialog()
+                }
+            }
+            .show()
+    }
+
+    private fun openTtsSettings() {
+        val intents = listOf(
+            Intent("com.android.settings.TTS_SETTINGS"),
+            Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA),
+            Intent(android.provider.Settings.ACTION_SETTINGS),
+        )
+        for (i in intents) {
+            if (runCatching { startActivity(i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }.isSuccess) return
+        }
     }
 
     private fun renderUpdate(state: UpdateState) {

@@ -56,6 +56,23 @@
                 android:text="@string/open" />
         </LinearLayout>
 
+        <HorizontalScrollView
+            android:id="@+id/channelsScroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:scrollbars="none"
+            android:visibility="gone">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/channelChips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:selectionRequired="true"
+                app:singleLine="true"
+                app:singleSelection="true" />
+        </HorizontalScrollView>
+
         <TextView
             android:id="@+id/status"
             android:layout_width="match_parent"
@@ -214,6 +231,16 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?attr/textAppearanceBodyMedium" />
             </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/voiceButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/voice_default"
+                app:icon="@drawable/ic_voice" />
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/followSwitch"

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Озвучка каналу</string>
-    <string name="channel_hint">@канал або посилання t.me</string>
-    <string name="open">Відкрити</string>
+    <string name="channel_hint">Додати канал: @назва або t.me/…</string>
+    <string name="open">Додати</string>
     <string name="speed">Швидкість</string>
     <string name="follow">Читати нові пости, щойно з\'являються</string>
     <string name="load_older">Завантажити старіші</string>
@@ -19,4 +19,17 @@
     <string name="update_retry">Спробувати ще раз</string>
     <string name="update_ready">Оновлення завантажено</string>
     <string name="update_failed">Не вдалося оновити: %1$s</string>
+    <string name="voice_default">Голос: стандартний</string>
+    <string name="voice_label">Голос: %1$s</string>
+    <string name="voice_title">Голос озвучки</string>
+    <string name="voice_standard">Стандартний голос</string>
+    <string name="voice_engine">Синтезатор…</string>
+    <string name="voice_more">Ще голоси</string>
+    <string name="voice_done">Готово</string>
+    <string name="voice_none">На цьому телефоні немає встановлених голосів. Натисніть «Ще голоси», щоб завантажити український голос.</string>
+    <string name="engine_title">Синтезатор мовлення</string>
+    <string name="remove_channel_title">Прибрати канал?</string>
+    <string name="remove_channel_text">«%1$s» зникне зі списку. Його завжди можна додати знову.</string>
+    <string name="remove">Прибрати</string>
+    <string name="cancel">Скасувати</string>
 </resources>
