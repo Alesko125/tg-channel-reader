@@ -9,6 +9,8 @@
         <item name="colorSurface">#F8F9FC</item>
         <item name="colorSurfaceContainerLow">#EFF2F6</item>
         <item name="colorSurfaceContainer">#E9EDF2</item>
+        <item name="colorSurfaceContainerHigh">#E3E8EE</item>
+        <item name="colorSurfaceContainerHighest">#DDE3EA</item>
         <item name="colorSurfaceVariant">#DEE3EB</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>

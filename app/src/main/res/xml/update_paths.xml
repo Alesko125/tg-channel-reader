@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Назовні FileProvider віддає лише теку завантажених оновлень у кеші.
+    Ширший шлях відкрив би інсталятору доступ і до решти файлів застосунку.
+-->
+<paths>
+    <cache-path name="updates" path="updates/" />
+</paths>

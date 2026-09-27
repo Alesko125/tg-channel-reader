@@ -13,6 +13,11 @@ android {
         targetSdk = 35
         versionCode = (System.getenv("VERSION_CODE") ?: "1").toInt()
         versionName = System.getenv("VERSION_NAME") ?: "1.0"
+        // Звідси застосунок дізнається про нову версію (файл кладе в реліз GitHub Actions).
+        buildConfigField(
+            "String", "UPDATE_MANIFEST_URL",
+            "\"https://github.com/Alesko125/tg-channel-reader/releases/latest/download/version.json\"",
+        )
     }
 
     // Release signing comes from environment variables (set as GitHub Actions secrets).
@@ -54,6 +59,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
     testOptions {
         unitTests.isIncludeAndroidResources = true
@@ -69,8 +75,10 @@ dependencies {
     implementation("androidx.media:media:1.7.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("org.jsoup:jsoup:1.18.1")
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.14.1")
     testImplementation("androidx.test:core:1.6.1")
+    testImplementation("androidx.work:work-testing:2.9.1")
 }

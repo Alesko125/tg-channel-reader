@@ -48,24 +48,56 @@ jobs:
           name: TgReader-apk
           path: TgReader.apk
 
-      # Every push to main publishes (or refreshes) the release for the version in VERSION.
-      # Bump VERSION to start a new release.
-      - name: Publish release
+      # A release is published once per version: bump VERSION (and RELEASE_NOTES.md) to ship an update.
+      # version.json in the latest release is what installed apps check for updates.
+      - name: Check whether this version is already released
+        id: release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "v$VERSION_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release v$VERSION_NAME already exists, nothing to publish"
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prepare update manifest
+        if: steps.release.outputs.publish == 'true'
+        run: |
+          jq -n \
+            --argjson code "${{ github.run_number }}" \
+            --arg name "$VERSION_NAME" \
+            --arg url "https://github.com/$GITHUB_REPOSITORY/releases/download/v$VERSION_NAME/TgReader.apk" \
+            --arg sha "$(sha256sum TgReader.apk | cut -d' ' -f1)" \
+            --arg notes "$(cat RELEASE_NOTES.md 2>/dev/null)" \
+            '{version_code: $code, version_name: $name, apk_url: $url, sha256: $sha, mandatory: false, notes: $notes}' \
+            > version.json
+          cat version.json
+          {
+            cat RELEASE_NOTES.md 2>/dev/null
+            echo
+            echo "### Як встановити"
+            echo "1. Завантажте **TgReader.apk** нижче (розділ Assets)."
+            echo "2. Відкрийте файл на телефоні й дозвольте встановлення з цього джерела."
+            echo "3. Вставте адресу публічного каналу, наприклад \`@ukrpravda_news\`, і натисніть ▶."
+            echo
+            echo "Потрібен Android 8.0+. Якщо озвучка мовчить, встановіть український голос:"
+            echo "Налаштування → Система → Мови → Синтез мовлення → Google → Встановити голосові дані → Українська."
+            echo
+            echo "Далі застосунок сам повідомлятиме про нові версії."
+          } > release-body.md
+
+      - name: Publish release
+        if: steps.release.outputs.publish == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION_NAME }}
           target_commitish: ${{ github.sha }}
           name: Озвучка каналу ${{ env.VERSION_NAME }}
           make_latest: true
-          files: TgReader.apk
-          body: |
-            ### Як встановити
-            1. Завантажте **TgReader.apk** нижче (розділ Assets).
-            2. Відкрийте файл на телефоні й дозвольте встановлення з цього джерела.
-            3. Вставте адресу публічного каналу, наприклад `@ukrpravda_news`, і натисніть ▶.
-
-            Потрібен Android 8.0+. Якщо озвучка мовчить, встановіть український голос:
-            Налаштування → Система → Мови → Синтез мовлення → Google → Встановити голосові дані → Українська.
-
-            Збірка №${{ github.run_number }} (${{ github.sha }})
+          body_path: release-body.md
+          files: |
+            TgReader.apk
+            version.json

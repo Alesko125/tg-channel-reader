@@ -8,6 +8,7 @@ import androidx.test.core.app.ActivityScenario
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -25,6 +26,12 @@ import java.io.File
 @Config(sdk = [34], qualifiers = "w411dp-h891dp-xxhdpi")
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class AppFlowTest {
+    @Before fun initWorkManager() {
+        androidx.work.testing.WorkManagerTestInitHelper.initializeTestWorkManager(
+            androidx.test.core.app.ApplicationProvider.getApplicationContext()
+        )
+    }
+
     @Test fun openChannelAndSpeak() {
         assumeTrue(System.getenv("RUN_ONLINE_TESTS") != null)
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->

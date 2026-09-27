@@ -7,4 +7,16 @@
     <string name="load_older">Завантажити старіші</string>
     <string name="now_playing">▶ зараз</string>
     <string name="empty_hint">Вставте адресу публічного Telegram-каналу, наприклад @ukrpravda_news, або поділіться посиланням на канал із Telegram у цей застосунок.</string>
+    <string name="update_channel">Оновлення застосунку</string>
+    <string name="update_dialog_title">Оновлення застосунку</string>
+    <string name="update_available_version">Доступне оновлення до версії %1$s</string>
+    <string name="update_tap_to_install">Натисніть, щоб оновити</string>
+    <string name="update_button">Оновити</string>
+    <string name="update_later">Пізніше</string>
+    <string name="update_downloading">Завантаження…</string>
+    <string name="update_downloading_pct">Завантаження %1$d%%</string>
+    <string name="update_install">Встановити</string>
+    <string name="update_retry">Спробувати ще раз</string>
+    <string name="update_ready">Оновлення завантажено</string>
+    <string name="update_failed">Не вдалося оновити: %1$s</string>
 </resources>
