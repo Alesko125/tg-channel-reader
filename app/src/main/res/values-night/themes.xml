@@ -1,0 +1,16 @@
+<resources>
+    <style name="Theme.TgReader" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#9ECAFF</item>
+        <item name="colorOnPrimary">#003258</item>
+        <item name="colorPrimaryContainer">#00497D</item>
+        <item name="colorOnPrimaryContainer">#D1E4FF</item>
+        <item name="colorSecondaryContainer">#3B4858</item>
+        <item name="colorOnSecondaryContainer">#D7E3F7</item>
+        <item name="colorSurface">#111418</item>
+        <item name="colorSurfaceContainerLow">#191C20</item>
+        <item name="colorSurfaceContainer">#1D2024</item>
+        <item name="colorSurfaceVariant">#42474E</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

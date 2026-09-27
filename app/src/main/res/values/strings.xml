@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Озвучка каналу</string>
+    <string name="channel_hint">@канал або посилання t.me</string>
+    <string name="open">Відкрити</string>
+    <string name="speed">Швидкість</string>
+    <string name="follow">Читати нові пости, щойно з\'являються</string>
+    <string name="load_older">Завантажити старіші</string>
+    <string name="now_playing">▶ зараз</string>
+    <string name="empty_hint">Вставте адресу публічного Telegram-каналу, наприклад @ukrpravda_news, або поділіться посиланням на канал із Telegram у цей застосунок.</string>
+</resources>
