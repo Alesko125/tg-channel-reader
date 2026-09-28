@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_sleep" android:icon="@drawable/ic_bedtime" android:title="@string/sleep_timer" app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_add" android:icon="@drawable/ic_add" android:title="@string/add_channel" app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_voice" android:title="@string/voice_and_speed" app:showAsAction="never" />
+    <item android:id="@+id/action_open_tg" android:title="@string/open_in_telegram" app:showAsAction="never" />
+    <item android:id="@+id/action_remove" android:title="@string/remove_this_channel" app:showAsAction="never" />
+</menu>

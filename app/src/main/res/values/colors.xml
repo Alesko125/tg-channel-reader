@@ -1,4 +1,7 @@
 <resources>
     <color name="brand">#2481CC</color>
     <color name="launcher_bg">#2481CC</color>
+    <color name="widget_bg">#F2F6FA</color>
+    <color name="widget_text">#1B1F24</color>
+    <color name="widget_text_soft">#5A6570</color>
 </resources>

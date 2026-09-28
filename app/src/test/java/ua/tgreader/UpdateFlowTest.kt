@@ -30,6 +30,15 @@ import java.security.MessageDigest
 @Config(sdk = [34], qualifiers = "w411dp-h891dp-xxhdpi")
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class UpdateFlowTest {
+    @Before fun isolateUpdater() {
+        // Without this the real GitHub check finds a "newer" release than the test build and shows its dialog.
+        ua.tgreader.update.Updater::class.java.getDeclaredField("lastCheck").apply { isAccessible = true }
+            .setLong(ua.tgreader.update.Updater, System.currentTimeMillis())
+        (ua.tgreader.update.Updater::class.java.getDeclaredField("_state").apply { isAccessible = true }
+            .get(ua.tgreader.update.Updater) as kotlinx.coroutines.flow.MutableStateFlow<ua.tgreader.update.UpdateState>)
+            .value = ua.tgreader.update.UpdateState.None
+    }
+
     @Before fun initWorkManager() {
         androidx.work.testing.WorkManagerTestInitHelper.initializeTestWorkManager(
             androidx.test.core.app.ApplicationProvider.getApplicationContext()

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="theme_titles">
+        <item>Як у системі</item>
+        <item>Світла</item>
+        <item>Темна</item>
+    </string-array>
+    <string-array name="theme_values">
+        <item>system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+    <string-array name="min_length_titles">
+        <item>Не пропускати</item>
+        <item>Коротші за 30 символів</item>
+        <item>Коротші за 60 символів</item>
+        <item>Коротші за 100 символів</item>
+        <item>Коротші за 200 символів</item>
+    </string-array>
+    <string-array name="min_length_values">
+        <item>0</item>
+        <item>30</item>
+        <item>60</item>
+        <item>100</item>
+        <item>200</item>
+    </string-array>
+</resources>

@@ -4,6 +4,7 @@
         <item name="colorOnPrimary">#003258</item>
         <item name="colorPrimaryContainer">#00497D</item>
         <item name="colorOnPrimaryContainer">#D1E4FF</item>
+        <item name="colorSecondary">#B7C8DC</item>
         <item name="colorSecondaryContainer">#3B4858</item>
         <item name="colorOnSecondaryContainer">#D7E3F7</item>
         <item name="colorSurface">#111418</item>

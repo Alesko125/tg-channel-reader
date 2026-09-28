@@ -1,6 +1,7 @@
 package ua.tgreader
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -58,5 +59,46 @@ class TelegramTest {
         val chunks = TextTools.chunks(long, max = 100)
         assertTrue(chunks.all { it.length <= 101 })
         assertEquals("Дивись посилання", chunks.last())
+    }
+
+    @Test fun parsesPhotos() {
+        val html = javaClass.classLoader!!.getResource("durov.html")!!.readText()
+        val page = Telegram.parse(html, "durov")
+        val withPhoto = page.posts.filter { it.photo != null }
+        assertTrue(withPhoto.isNotEmpty())
+        assertTrue(withPhoto.all { it.photo!!.startsWith("https://") })
+        assertTrue(page.posts.all { it.channel == "durov" })
+    }
+
+    @Test fun findsChannelsInText() {
+        val text = """
+            Мої канали:
+            https://t.me/Northern_Sich_ukr
+            t.me/s/war_monitor/123
+            @kpszsu — повітряні сили
+            ukrpravda_news
+            пошта test@example.com не канал
+        """.trimIndent()
+        assertEquals(listOf("Northern_Sich_ukr", "war_monitor", "kpszsu", "ukrpravda_news"), Telegram.findChannels(text))
+    }
+
+    @Test fun filterSkipsAdsWordsAndShortPosts() {
+        fun p(t: String) = Post(1, null, t, "c")
+        val s = AppSettings(skipAds = true, filterWords = listOf("Розіграш"), minLength = 10)
+        assertTrue(PostFilter.passes(p("Звичайна новина дня"), s))
+        assertFalse(PostFilter.passes(p("Класний сервіс\n#реклама"), s))
+        assertFalse(PostFilter.passes(p("На правах реклами: купуйте"), s))
+        assertFalse(PostFilter.passes(p("Великий розіграш призів"), s))
+        assertFalse(PostFilter.passes(p("Коротко"), s))
+        assertTrue(PostFilter.passes(p("Класний сервіс\n#реклама"), s.copy(skipAds = false)))
+        // "реклама" inside ordinary news is not an ad marker.
+        assertTrue(PostFilter.passes(p("Уряд заборонив рекламу казино"), s))
+    }
+
+    @Test fun catalogNamesAreValid() {
+        val names = Catalog.sections.flatMap { it.channels }.map { it.name }
+        assertEquals(names.size, names.map { it.lowercase() }.toSet().size)
+        names.forEach { assertEquals(it, Telegram.normalizeChannel(it)) }
+        assertTrue(Catalog.sections.first().channels.any { it.name == "Northern_Sich_ukr" })
     }
 }

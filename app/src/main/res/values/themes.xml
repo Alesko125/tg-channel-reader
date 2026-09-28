@@ -4,7 +4,9 @@
         <item name="colorOnPrimary">#FFFFFF</item>
         <item name="colorPrimaryContainer">#D6E8FA</item>
         <item name="colorOnPrimaryContainer">#001D33</item>
+        <item name="colorSecondary">#4F6378</item>
         <item name="colorSecondaryContainer">#D8E3EF</item>
+        <item name="colorOutline">#737B85</item>
         <item name="colorOnSecondaryContainer">#111C28</item>
         <item name="colorSurface">#F8F9FC</item>
         <item name="colorSurfaceContainerLow">#EFF2F6</item>
@@ -14,5 +16,8 @@
         <item name="colorSurfaceVariant">#DEE3EB</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
+    </style>
+    <style name="RoundedPhoto">
+        <item name="cornerSize">12dp</item>
     </style>
 </resources>

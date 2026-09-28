@@ -55,6 +55,9 @@ class PlaybackService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             Intent.ACTION_MEDIA_BUTTON -> MediaButtonReceiver.handleIntent(session, intent)
+            ACTION_TOGGLE -> Reader.toggle()
+            ACTION_NEXT -> Reader.next()
+            ACTION_PREV -> Reader.previous()
             ACTION_DISMISS -> { Reader.pause(); stopSelf() }
         }
         return START_NOT_STICKY
@@ -178,5 +181,8 @@ class PlaybackService : Service() {
         private const val CHANNEL_ID = "playback"
         private const val NOTIFICATION_ID = 1
         private const val ACTION_DISMISS = "ua.tgreader.DISMISS"
+        const val ACTION_TOGGLE = "ua.tgreader.TOGGLE"
+        const val ACTION_NEXT = "ua.tgreader.NEXT"
+        const val ACTION_PREV = "ua.tgreader.PREV"
     }
 }

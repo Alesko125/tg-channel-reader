@@ -6,7 +6,7 @@
     <string name="follow">Читати нові пости, щойно з\'являються</string>
     <string name="load_older">Завантажити старіші</string>
     <string name="now_playing">▶ зараз</string>
-    <string name="empty_hint">Вставте адресу публічного Telegram-каналу, наприклад @ukrpravda_news, або поділіться посиланням на канал із Telegram у цей застосунок.</string>
+    <string name="empty_hint">Додайте публічний Telegram-канал: вставте адресу, виберіть у каталозі або поділіться посиланням на канал із Telegram у цей застосунок.</string>
     <string name="update_channel">Оновлення застосунку</string>
     <string name="update_dialog_title">Оновлення застосунку</string>
     <string name="update_available_version">Доступне оновлення до версії %1$s</string>
@@ -32,4 +32,26 @@
     <string name="remove_channel_text">«%1$s» зникне зі списку. Його завжди можна додати знову.</string>
     <string name="remove">Прибрати</string>
     <string name="cancel">Скасувати</string>
+    <string name="menu">Меню</string>
+    <string name="settings">Налаштування</string>
+    <string name="add_channel">Додати канал</string>
+    <string name="catalog">Каталог каналів</string>
+    <string name="all_channels">Усі канали</string>
+    <string name="import_export">Імпорт / експорт каналів</string>
+    <string name="check_updates">Перевірити оновлення</string>
+    <string name="about">Про застосунок</string>
+    <string name="sleep_timer">Таймер сну</string>
+    <string name="voice_and_speed">Голос і швидкість</string>
+    <string name="open_in_telegram">Відкрити в Telegram</string>
+    <string name="remove_this_channel">Прибрати цей канал</string>
+    <string name="prev_post">Попередній пост</string>
+    <string name="next_post">Наступний пост</string>
+    <string name="prev_sentence">На речення назад</string>
+    <string name="next_sentence">На речення вперед</string>
+    <string name="play">Слухати</string>
+    <string name="pause">Пауза</string>
+    <string name="follow_short">Нові пости</string>
+    <string name="widget_description">Назва каналу, поточний пост і кнопки керування</string>
+    <string name="up_to_date">У вас остання версія (%1$s)</string>
+    <string name="add">Додати</string>
 </resources>

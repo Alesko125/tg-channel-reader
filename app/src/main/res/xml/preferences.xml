@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="Читання" app:iconSpaceReserved="false">
+        <Preference
+            android:key="voice_ui"
+            android:title="Голос"
+            app:iconSpaceReserved="false" />
+        <SeekBarPreference
+            android:key="rate_ui"
+            android:max="25"
+            android:persistent="false"
+            android:title="Швидкість мовлення"
+            app:iconSpaceReserved="false"
+            app:min="5"
+            app:showSeekBarValue="false"
+            app:updatesContinuously="false" />
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="announce"
+            android:summary="Перед постом: «Українська правда, 14:56»"
+            android:title="Оголошувати канал і час"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="chime"
+            android:summary="Короткий звук, коли починається наступний пост"
+            android:title="Сигнал між постами"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
+            android:key="follow_ui"
+            android:persistent="false"
+            android:summary="Щохвилини перевіряти канал і читати нові пости"
+            android:title="Читати нові пости"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Фільтр" app:iconSpaceReserved="false">
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="skip_ads"
+            android:summary="Пости з позначками #реклама, «на правах реклами», erid"
+            android:title="Пропускати рекламу"
+            app:iconSpaceReserved="false" />
+        <EditTextPreference
+            android:dialogMessage="Через кому. Пости з будь-яким із цих слів не показуються й не читаються."
+            android:key="filter_words"
+            android:title="Пропускати пости зі словами"
+            app:iconSpaceReserved="false" />
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/min_length_titles"
+            android:entryValues="@array/min_length_values"
+            android:key="min_length"
+            android:title="Пропускати короткі пости"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Вигляд" app:iconSpaceReserved="false">
+        <ListPreference
+            android:defaultValue="system"
+            android:entries="@array/theme_titles"
+            android:entryValues="@array/theme_values"
+            android:key="theme"
+            android:title="Тема"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <SeekBarPreference
+            android:defaultValue="100"
+            android:key="font_scale"
+            android:max="160"
+            android:title="Розмір шрифту"
+            app:iconSpaceReserved="false"
+            app:min="80"
+            app:seekBarIncrement="10"
+            app:showSeekBarValue="false" />
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="compact_panel"
+            android:summary="Унизу лише кнопки керування; швидкість і голос — тут"
+            android:title="Компактна панель"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="show_photos"
+            android:summary="Озвучується все одно лише текст"
+            android:title="Показувати фото з постів"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+</PreferenceScreen>

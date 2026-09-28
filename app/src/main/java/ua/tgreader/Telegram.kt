@@ -6,7 +6,17 @@ import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
 import java.io.IOException
 
-data class Post(val id: Int, val date: String?, val text: String)
+data class Post(
+    val id: Int,
+    val date: String?,
+    val text: String,
+    /** Channel username; lets posts from several channels share one feed. */
+    val channel: String = "",
+    /** First photo (or video preview) of the post, if any. */
+    val photo: String? = null,
+) {
+    val key: String get() = "$channel/$id"
+}
 
 data class ChannelPage(
     val channel: String,
@@ -26,6 +36,16 @@ object Telegram {
     private val CHANNEL_RE = Regex("^[A-Za-z][A-Za-z0-9_]{3,31}$")
     private const val USER_AGENT = "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Mobile Safari/537.36"
     private val BLOCK_TAGS = setOf("div", "p", "blockquote", "li", "pre")
+    private val BG_URL = Regex("""background-image:url\('([^']+)'\)""")
+
+    /** Every channel mentioned in free text: t.me links, @names or bare names one per line. */
+    fun findChannels(text: String): List<String> {
+        val found = LinkedHashSet<String>()
+        Regex("""(?:t\.me|telegram\.me)/(?:s/)?([A-Za-z][A-Za-z0-9_]{3,31})""").findAll(text).forEach { found += it.groupValues[1] }
+        Regex("""(?<![\w/.])@([A-Za-z][A-Za-z0-9_]{3,31})""").findAll(text).forEach { found += it.groupValues[1] }
+        text.lines().map { it.trim() }.filter { CHANNEL_RE.matches(it) }.forEach { found += it }
+        return found.distinctBy { it.lowercase() }
+    }
 
     /** Accepts `name`, `@name`, `t.me/name`, `https://t.me/s/name/123`, or any text containing such a link. */
     fun normalizeChannel(input: String): String {
@@ -66,7 +86,9 @@ object Telegram {
             } ?: return@mapNotNull null
             val text = TextTools.clean(extractText(textEl))
             if (text.isEmpty()) return@mapNotNull null
-            Post(id, msg.selectFirst("time[datetime]")?.attr("datetime"), text)
+            val photo = msg.selectFirst(".tgme_widget_message_photo_wrap, .tgme_widget_message_video_thumb")
+                ?.attr("style")?.let { BG_URL.find(it)?.groupValues?.get(1) }
+            Post(id, msg.selectFirst("time[datetime]")?.attr("datetime"), text, channel, photo)
         }
         return ChannelPage(channel, title.ifEmpty { channel }, posts, prevBefore)
     }
